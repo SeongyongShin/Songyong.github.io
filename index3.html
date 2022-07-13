@@ -5,16 +5,68 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'">
     <title>unilinktest</title>
     <script type="text/javascript">
-    window.onload = function() {
-        window.location.href = "https://fido.kt.com/uniLink/requestServiceWebview? serviceType=RECEIPT&moveUrl=https://www.naver.com&callBackUrl=https://www.google.com";
-    };
+
+        var isPassSupported = false;
+        var currentOS;
+        var userAgent = navigator.userAgent.toLowerCase();
+        var compare;
+
+        if (userAgent.match(/android/i) || userAgent.match(/samsungbrowser/i)) {
+            currentOS = "android";
+        } else if (userAgent.match(/iphone/i)) {
+            currentOS = "ios";
+            isPassSupported = true;
+        } else if (userAgent.match(/ipad/i) || userAgent.match(/ipod/i)) {
+            currentOS = "ios_pad";
+        } else {
+            currentOS = "notMobile";
+        }
+        
+        $(document).ready(function(){
+            runApp();
+        });
+        
+        function goMarket() {
+            if (currentOS == "android") {
+                location.href = "https://play.google.com/store/apps/details?id=com.kt.ktauth";
+            } else if (currentOS == "ios") {
+                location.href = "https://apps.apple.com/kr/app/id1134371550";
+            } else {
+                alert("안드로이드와 아이폰에서만 사용 가능 합니다.");
+            }
+        }
+        
+        function runApp() {
+            if (currentOS == "android") {
+                runApp_android();
+            } else if (currentOS == "ios") {
+                runApp_ios();
+            } else {
+                alert("안드로이드와 아이폰에서만 사용 가능 합니다.");
+                return;
+            }
+        }
+        
+        function runApp_ios() {
+            location.href = "ktauthexternalcall://requestKtBenefit?financialBenefitId=1051";
+            
+            setTimeout(function() {
+                goMarket();
+            }, 3000);
+        }
+        
+        function runApp_android() {
+            location.href= "intent://requestKtBenefit?financialBenefitId=1051#Intent;scheme=ktpasslink20;package=kt.fido.sw.asm.api;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.kt.ktauth;end";
+        }
+
 
     </script>
 
-  </head>
+  </head>ktauthexternalcall
   <body>
       <h1>hi</h1>
-      <h1><a href="https://kaf.dayside.co.kr/uniLink/requestServiceWebview?serviceType=RECEIPT&moveUrl=https://www.naver.com&callBackUrl=https://www.google.com" target="_blank">이동</a></h1>
+<!--      <h1><a href="https://kaf.dayside.co.kr/uniLink/requestSignCert?serviceType=RECEIPT&moveUrl=https://www.naver.com&callBackUrl=https://www.google.com" target="_blank">이동</a></h1>-->
+<h1><a href="ktauthexternalcall://requestSignCert?serviceType=RECEIPT&moveUrl=https://www.naver.com&callBackUrl=https://www.google.com" target="_blank">이동1</a></h1>
       </body>
 </html>
 
